@@ -1,17 +1,28 @@
 <div class="panel-group"> 
     <div class="panel panel-primary">
         <div class="panel-heading">
-            Prouct
+            {{ProductConstantservice.productTitle}}
         </div>
         <div class="panel-body">
             <div class="row">
-                    <div class="col-md-2"><span>Filter By</span> </div>
+                    <div class="col-md-2"><span>{{ProductConstantservice.filterBy}}</span> </div>
                     <div class="col-md-2">
-                        <input type="text" placeholder="Enter Product Name">
+                        <input type="text" placeholder="Enter Product Name" 
+                         [(ngModel)]="searchData">
+                    </div>
+
+                    
+                    <div class="col-md-2">
+                        <button class="btn btn-info" name="Search" [title]="Search" onclick=""> Search</button>
                     </div>
                     <div class="col-md-2">
-                        <button class="btn btn-info" name="Search" title="Search" onclick=""> Search</button>
+                        <button class="btn btn-success" name="showImage" title="{{showImage?'Hide Image':'Show Image'}}" (click)="toggleImage()">
+                         {{showImage?"Hide Image":"Show Image"}}
+                        </button>
                     </div>
+            </div>
+            <div>
+                {{searchData}} {{message}}
             </div>
         </div>
     </div>
@@ -19,28 +30,46 @@
         <div class="panel-body">
         <div class="row">
             <div class="col-row-2">
-                    Number of product filters
+                    Number of product filters : {{(products | prductSearch: searchData).length}}
             </div>
-        </div>
+        </div>   
         <div class="table-responsive">
             <div class="table">
                 <thead>
                     <tr>
-                        <th>Product Name</th>
-                        <th>Price</th>
+                        <th>&nbsp;</th>
+                        <th>{{ProductConstantservice.productName}}</th>
+                        <th>{{ProductConstantservice.productCode}}</th>
+                        <th>{{ProductConstantservice.releaseDate}}</th>
+                        <th>{{ProductConstantservice.description}}</th>
+                        <th>{{ProductConstantservice.price}}</th>
+                        <th>{{ProductConstantservice.rating}}</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Books</td>
-                        <td>12.00</td>
+                    <tr *ngFor= "let prod of products | prductSearch: searchData">
+                        <td ><img 
+                            [src]="prod.imageUrl"
+                            *ngIf="showImage"
+                            [style.width.px]="imageWidth"
+                            /></td>
+                        <td>{{prod.productName | myUpper:'upper'}}</td>
+                        <td>{{prod.productCode | myUpper:'lower'}}</td>
+                        <td>{{prod.releaseDate}}</td>
+                        <td>{{prod.description}}</td>
+                        <td [ngStyle]="{'background-color' : prod.price >20?'slateblue':'palevioletred'}">
+                            {{prod.price | discount:6 |currency }}</td>
+                        <td><!--{{prod.starRating}} <app-star></app-star> -->
+                            <app-shared
+                            [rating]="prod.starRating"
+                            (ratingClicked)="onDataRecive($event)"></app-shared>
+                        </td>
+                        
                     </tr>
-                    <tr>
-                        <td>Sheets</td>
-                        <td>1</td>
-                    </tr>
+                   
                 </tbody>
             </div>
+            
         </div>
     </div>
     </div>
